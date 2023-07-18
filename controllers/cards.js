@@ -4,12 +4,12 @@ let errCode = 500;
 let errMessage = 'Другая ошибка';
 
 const whatError = (err) => {
-  if (err.name === 'CastError') {
-    errCode = 404;
-    errMessage = 'Карточка не найдена';
-  }
-  if (err.name === 'ValidationError') {
+  if (err.name === 'CastError' || err.name === 'ValidationError') {
     errCode = 400;
+    errMessage = 'Пользователь не найден';
+  }
+  if (err.name === 'Error') {
+    errCode = 404;
     errMessage = 'Неверно введены данные';
   }
 };
