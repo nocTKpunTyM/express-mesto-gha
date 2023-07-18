@@ -6,11 +6,11 @@ let errMessage = 'Другая ошибка';
 const whatError = (err) => {
   if (err.name === 'CastError' || err.name === 'ValidationError') {
     errCode = 400;
-    errMessage = 'Пользователь не найден';
+    errMessage = 'Неверно введены данные';
   }
   if (err.name === 'Error') {
     errCode = 404;
-    errMessage = 'Неверно введены данные';
+    errMessage = 'Карточка не найдена';
   }
 };
 
@@ -41,7 +41,11 @@ const delCard = (req, res) => {
   const { id } = req.params;
   Card.findByIdAndRemove(id)
     .then((card) => {
-      res.send(card);
+      if (!card) {
+        throw new Error();
+      } else {
+        res.send(card);
+      }
     })
     .catch((error) => {
       whatError(error);
@@ -58,7 +62,11 @@ const likeCard = (req, res) => {
     { new: true },
   )
     .then((card) => {
-      res.send(card);
+      if (!card) {
+        throw new Error();
+      } else {
+        res.send(card);
+      }
     })
     .catch((error) => {
       whatError(error);
@@ -75,7 +83,11 @@ const dislikeCard = (req, res) => {
     { new: true },
   )
     .then((card) => {
-      res.send(card);
+      if (!card) {
+        throw new Error();
+      } else {
+        res.send(card);
+      }
     })
     .catch((error) => {
       whatError(error);

@@ -4,13 +4,13 @@ let errCode = 500;
 let errMessage = 'Другая ошибка';
 
 const whatError = (err) => {
-  if (err.name === 'CastError') {
-    errCode = 404;
-    errMessage = 'Пользователь не найден';
-  }
-  if (err.name === 'ValidationError') {
+  if (err.name === 'CastError' || err.name === 'ValidationError') {
     errCode = 400;
     errMessage = 'Неверно введены данные';
+  }
+  if (err.name === 'Error') {
+    errCode = 404;
+    errMessage = 'Пользователь не найден';
   }
 };
 
@@ -30,11 +30,15 @@ const getUser = (req, res) => {
   const { id } = req.params;
   User.findById(id)
     .then((user) => {
-      res.send(user);
+      if (!user) {
+        throw new Error();
+      } else {
+        res.send(user);
+      }
     })
     .catch((error) => {
-      whatError(error);
-      res.status(errCode).send({ message: errMessage });
+       whatError(error);
+       res.status(errCode).send({ message: errMessage });
     });
 };
 
