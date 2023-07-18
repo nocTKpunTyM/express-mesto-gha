@@ -22,7 +22,7 @@ const createUser = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
