@@ -34,7 +34,7 @@ const getUser = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
@@ -45,7 +45,7 @@ const getUsers = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
@@ -58,7 +58,7 @@ const updateUser = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
@@ -71,7 +71,7 @@ const updateAvatar = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 

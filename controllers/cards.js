@@ -22,7 +22,7 @@ const createCard = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
@@ -33,7 +33,7 @@ const getCards = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
@@ -45,7 +45,7 @@ const delCard = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
@@ -62,7 +62,7 @@ const likeCard = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
@@ -79,7 +79,7 @@ const dislikeCard = (req, res) => {
     })
     .catch((error) => {
       whatError(error);
-      res.status(errCode).send(errMessage);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 
