@@ -18,7 +18,7 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((user) => {
-      res.send(user);
+      res.status(201).send(user);
     })
     .catch((error) => {
       whatError(error);
@@ -29,12 +29,9 @@ const createUser = (req, res) => {
 const getUser = (req, res) => {
   const { id } = req.params;
   User.findById(id)
+    .orFail(new Error())
     .then((user) => {
-      if (!user) {
-        throw new Error();
-      } else {
-        res.send(user);
-      }
+      res.status(201).send(user);
     })
     .catch((error) => {
        whatError(error);
@@ -44,6 +41,7 @@ const getUser = (req, res) => {
 
 const getUsers = (req, res) => {
   User.find({})
+    .orFail(new Error())
     .then((users) => {
       res.send(users);
     })
