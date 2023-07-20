@@ -11,20 +11,20 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: [true, 'Поле "Ссылка на фото" должно быть заполнено'],
-    validate: { 
-      validator: (v) => validator.isURL(v), 
-      message: 'Некорректный URL', 
+    validate: {
+      validator: (v) => validator.isURL(v),
+      message: 'Некорректный URL',
     },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
-  likes: {
+  likes: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     default: [],
-  },
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

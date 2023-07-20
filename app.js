@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '64adb5812e0d0b6d2856feef',
+    _id: '64b7dac395aa02b72e76589b',
   };
 
   next();

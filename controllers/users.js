@@ -31,7 +31,7 @@ const getUser = (req, res) => {
   User.findById(id)
     .orFail(new Error())
     .then((user) => {
-      res.status(201).send(user);
+      res.send(user);
     })
     .catch((error) => {
        whatError(error);
