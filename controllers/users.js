@@ -34,8 +34,8 @@ const getUser = (req, res) => {
       res.send(user);
     })
     .catch((error) => {
-       whatError(error);
-       res.status(errCode).send({ message: errMessage });
+      whatError(error);
+      res.status(errCode).send({ message: errMessage });
     });
 };
 

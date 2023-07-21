@@ -61,7 +61,7 @@ const likeCard = (req, res) => {
   )
     .orFail(new Error())
     .then((card) => {
-        res.send(card);
+      res.send(card);
     })
     .catch((error) => {
       whatError(error);
@@ -79,7 +79,7 @@ const dislikeCard = (req, res) => {
   )
     .orFail(new Error())
     .then((card) => {
-        res.send(card);
+      res.send(card);
     })
     .catch((error) => {
       whatError(error);
