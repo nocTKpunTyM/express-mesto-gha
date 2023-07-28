@@ -10,8 +10,14 @@ const createUser = (req, res, next) => {
     .then((hash) => User.findOne({ email })
       .then(() => {
         User.create({ ...req.body, password: hash })
-          .then(() => {
-            res.status(201).send({ message: 'Пользователь зарегистрирован' });
+          .then((user) => {
+            res.status(201).send({
+              _id: user._id,
+              name: user.name,
+              about: user.about,
+              avatar: user.avatar,
+              email: user.email,
+            });
           })
           .catch((next));
       }));
@@ -23,7 +29,7 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-      res.status(201).send({ token });
+      res.send({ token });
     })
     .catch((next));
 };
@@ -33,9 +39,31 @@ const getUser = (req, res, next) => {
   User.findById(id)
     .orFail(new NotFoundError('Нет пользователя с таким id'))
     .then((user) => {
-      res.send(user);
+      res.send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
     })
     .catch((next));
+};
+
+const getUserId = (req, res, next) => {
+  const { id } = req.params;
+  User.findById(id)
+    .orFail(new NotFoundError('Нет пользователя с таким id'))
+    .then((user) => {
+      res.send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
+    })
+    .catch(next);
 };
 
 const getUsers = (req, res, next) => {
@@ -76,4 +104,5 @@ module.exports = {
   updateUser,
   updateAvatar,
   login,
+  getUserId,
 };
