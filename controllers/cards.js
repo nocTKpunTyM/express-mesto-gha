@@ -1,57 +1,35 @@
 const Card = require('../models/card');
+const NotFoundError = require('../errors/not-found-err');
 
-let errCode = 500;
-let errMessage = 'Другая ошибка';
-
-const whatError = (err) => {
-  if (err.name === 'CastError' || err.name === 'ValidationError') {
-    errCode = 400;
-    errMessage = 'Неверно введены данные';
-  }
-  if (err.name === 'Error') {
-    errCode = 404;
-    errMessage = 'Карточка не найдена';
-  }
-};
-
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
       res.status(201).send(card);
     })
-    .catch((error) => {
-      whatError(error);
-      res.status(errCode).send({ message: errMessage });
-    });
+    .catch((next));
 };
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
-    .orFail(new Error())
+    .orFail(new NotFoundError('Нет карточек'))
     .then((card) => {
       res.send(card);
     })
-    .catch((error) => {
-      whatError(error);
-      res.status(errCode).send({ message: errMessage });
-    });
+    .catch((next));
 };
 
-const delCard = (req, res) => {
+const delCard = (req, res, next) => {
   const { id } = req.params;
   Card.findByIdAndRemove(id)
-    .orFail(new Error())
+    .orFail(new NotFoundError('Нет такой карточки'))
     .then((card) => {
       res.send(card);
     })
-    .catch((error) => {
-      whatError(error);
-      res.status(errCode).send({ message: errMessage });
-    });
+    .catch((next));
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   const { id } = req.params;
   const user = req.user._id;
   Card.findByIdAndUpdate(
@@ -59,17 +37,14 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: user } },
     { new: true },
   )
-    .orFail(new Error())
+    .orFail(new NotFoundError('Нет такой карточки'))
     .then((card) => {
       res.send(card);
     })
-    .catch((error) => {
-      whatError(error);
-      res.status(errCode).send({ message: errMessage });
-    });
+    .catch((next));
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   const { id } = req.params;
   const user = req.user._id;
   Card.findByIdAndUpdate(
@@ -77,14 +52,11 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: user } },
     { new: true },
   )
-    .orFail(new Error())
+    .orFail(new NotFoundError('Нет такой карточки'))
     .then((card) => {
       res.send(card);
     })
-    .catch((error) => {
-      whatError(error);
-      res.status(errCode).send({ message: errMessage });
-    });
+    .catch((next));
 };
 
 module.exports = {
