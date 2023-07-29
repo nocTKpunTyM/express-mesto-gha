@@ -2,25 +2,34 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
+const ReplicateError = require('../errors/replicate-err');
+const ValidationError = require('../errors/validation-err');
 
 const createUser = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).send({ message: 'Email и Пароль обязательны' });
   return bcrypt.hash(password, 10)
-    .then((hash) => User.findOne({ email })
-      .then(() => {
-        User.create({ ...req.body, password: hash })
-          .then((user) => {
-            res.status(201).send({
-              _id: user._id,
-              name: user.name,
-              about: user.about,
-              avatar: user.avatar,
-              email: user.email,
-            });
-          })
-          .catch((next));
-      }));
+    .then((hash) => {
+      User.create({ ...req.body, password: hash })
+        .then((user) => {
+          res.status(201).send({
+            _id: user._id,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+          });
+        })
+        .catch((err) => {
+          if (err.code === 11000) {
+            next(new ReplicateError('Пользователь с таким email уже есть'));
+          } else if (err.name === 'ValidationError') {
+            next(new ValidationError('Неккоректно введены данные'));
+          } else {
+            next(err);
+          }
+        });
+    });
 };
 
 const login = (req, res, next) => {
@@ -83,7 +92,13 @@ const updateUser = (req, res, next) => {
     .then((user) => {
       res.send(user);
     })
-    .catch((next));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError('Неккоректно введены данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const updateAvatar = (req, res, next) => {
@@ -94,7 +109,13 @@ const updateAvatar = (req, res, next) => {
     .then((user) => {
       res.send(user);
     })
-    .catch((next));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError('Неккоректно введены данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = {

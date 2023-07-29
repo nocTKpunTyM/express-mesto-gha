@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
+const ValidationError = require('../errors/validation-err');
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -8,7 +9,13 @@ const createCard = (req, res, next) => {
     .then((card) => {
       res.status(201).send(card);
     })
-    .catch((next));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError('Неккоректно введены данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const getCards = (req, res, next) => {

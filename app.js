@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 const NotFoundError = require('./errors/not-found-err');
 const { signinValidation, signupValidation } = require('./middlewares/celebrate');
@@ -12,6 +13,13 @@ mongoose.connect(DB_URL);
 const app = express();
 
 app.use(helmet());
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
